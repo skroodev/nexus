@@ -59,9 +59,10 @@ export default function Footer() {
               <Link 
                 key={n.href} 
                 href={n.href} 
-                className="text-fluid-sm text-black/80 hover:text-black transition-colors"
+                className="relative text-fluid-sm text-black/80 hover:text-black transition-colors group"
               >
                 {n.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black/80 transition-all duration-300 ease-out group-hover:w-full"></span>
               </Link>
             ))}
           </nav>
