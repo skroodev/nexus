@@ -1,0 +1,28 @@
+.scroll-reveal-wrapper {
+  position: relative;
+  width: 100%;
+  height: 250vh;
+}
+
+.scroll-reveal-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2rem;
+}
+
+.scroll-reveal-text {
+  max-width: 1000px;
+  font-size: clamp(1.4rem, 3.5vw, 2.5rem);
+  line-height: 1.6;
+  font-weight: 500;
+  text-align: left;
+}
+
+.scroll-reveal-word {
+  display: inline;
+  will-change: opacity, filter;
+}
