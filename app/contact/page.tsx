@@ -14,14 +14,14 @@ export default function ContactPage() {
       
       <div className="max-w-fluid mx-auto px-4 sm:px-6 py-6 sm:py-10 md:py-14 relative z-10">
         {/* Header Section */}
-        <div className="text-center mb-10 sm:mb-14 md:mb-16">
-          <span className="inline-block text-primary text-fluid-sm font-medium uppercase tracking-widest mb-3">
+        <div className="mb-10 sm:mb-14 md:mb-16">
+          <span className="inline-block text-primary text-fluid-sm font-medium uppercase tracking-widest">
             Contact
           </span>
           <h1 className="text-fluid-3xl sm:text-fluid-4xl md:text-fluid-5xl font-bold text-white mb-3 sm:mb-4">
             {contact.sectionTitle}
           </h1>
-          <p className="text-fluid-base sm:text-fluid-lg text-gray-400 max-w-xl mx-auto">
+          <p className="text-fluid-base sm:text-fluid-lg text-gray-400">
             {contact.sectionDescription}
           </p>
         </div>

@@ -79,6 +79,9 @@ interface MasonryProps {
   blurToFocus?: boolean;
   colorShiftOnHover?: boolean;
   onImageClick?: (img: string) => void;
+  initialCount?: number;
+  loadMoreCount?: number;
+  loadMoreLabel?: string;
 }
 
 const Masonry: React.FC<MasonryProps> = ({
@@ -91,11 +94,33 @@ const Masonry: React.FC<MasonryProps> = ({
   hoverScale = 0.95,
   blurToFocus = true,
   colorShiftOnHover = false,
-  onImageClick
+  onImageClick,
+  initialCount = 5,
+  loadMoreCount = 5,
+  loadMoreLabel = 'Voir plus'
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(initialCount);
+  const [hasMountedClient, setHasMountedClient] = useState(false);
+  const prevVisibleCountRef = useRef(initialCount);
   const modalRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  
+  // Track client mount for hydration-safe rendering
+  useEffect(() => {
+    setHasMountedClient(true);
+  }, []);
+  
+  // Check if we're on mobile/tablet (below 1000px)
+  const isMobileQuery = useMedia(
+    ['(min-width:1000px)'],
+    [0], // 0 = not mobile (desktop)
+    1    // 1 = mobile/tablet (default)
+  ) === 1;
+  
+  // Only use mobile detection after hydration to avoid mismatch
+  const isMobile = hasMountedClient ? isMobileQuery : false;
+  
   const columns = useMedia(
     ['(min-width:1500px)', '(min-width:1000px)', '(min-width:600px)', '(min-width:400px)'],
     [5, 4, 3, 2],
@@ -138,6 +163,16 @@ const Masonry: React.FC<MasonryProps> = ({
     preloadImages(items.map(i => i.img)).then(() => setImagesReady(true));
   }, [items]);
 
+  // On desktop, show all items. On mobile/tablet, use pagination
+  const effectiveVisibleCount = isMobile ? visibleCount : items.length;
+  const visibleItems = useMemo(() => items.slice(0, effectiveVisibleCount), [items, effectiveVisibleCount]);
+  const hasMore = isMobile && visibleCount < items.length;
+
+  const handleLoadMore = () => {
+    prevVisibleCountRef.current = visibleCount;
+    setVisibleCount(prev => Math.min(prev + loadMoreCount, items.length));
+  };
+
   const grid = useMemo<GridItem[]>(() => {
     if (!width) return [];
     const colHeights = new Array(columns).fill(0);
@@ -145,7 +180,7 @@ const Masonry: React.FC<MasonryProps> = ({
     const totalGaps = (columns - 1) * gap;
     const columnWidth = (width - totalGaps) / columns;
 
-    return items.map(child => {
+    return visibleItems.map(child => {
       const col = colHeights.indexOf(Math.min(...colHeights));
       const x = col * (columnWidth + gap);
       const height = child.height / 2;
@@ -154,18 +189,28 @@ const Masonry: React.FC<MasonryProps> = ({
       colHeights[col] += height + gap;
       return { ...child, x, y, w: columnWidth, h: height };
     });
-  }, [columns, items, width]);
+  }, [columns, visibleItems, width]);
+
+  // Calculate the total height of the masonry grid
+  const containerHeight = useMemo(() => {
+    if (grid.length === 0) return 0;
+    return Math.max(...grid.map(item => item.y + item.h)) + 16; // +16 for bottom padding
+  }, [grid]);
 
   const hasMounted = useRef(false);
 
   useIsomorphicLayoutEffect(() => {
     if (!imagesReady) return;
 
+    const prevCount = prevVisibleCountRef.current;
+
     grid.forEach((item, index) => {
       const selector = `[data-key="${item.id}"]`;
       const animProps = { x: item.x, y: item.y, width: item.w, height: item.h };
+      const isNewlyLoaded = index >= prevCount;
 
       if (!hasMounted.current) {
+        // Initial page load animation
         const start = getInitialPosition(item);
         gsap.fromTo(
           selector,
@@ -186,7 +231,26 @@ const Masonry: React.FC<MasonryProps> = ({
             delay: index * stagger
           }
         );
+      } else if (isNewlyLoaded) {
+        // "Load more" animation - simple fadeIn with blur
+        gsap.fromTo(
+          selector,
+          {
+            opacity: 0,
+            filter: 'blur(8px)',
+            ...animProps
+          },
+          {
+            opacity: 1,
+            filter: 'blur(0px)',
+            ...animProps,
+            duration: 0.5,
+            ease: 'power2.out',
+            delay: (index - prevCount) * 0.08
+          }
+        );
       } else {
+        // Existing items - just reposition
         gsap.to(selector, {
           ...animProps,
           duration,
@@ -197,6 +261,7 @@ const Masonry: React.FC<MasonryProps> = ({
     });
 
     hasMounted.current = true;
+    prevVisibleCountRef.current = effectiveVisibleCount;
   }, [grid, imagesReady, stagger, animateFrom, blurToFocus, duration, ease]);
 
   const handleMouseEnter = (id: string, element: HTMLElement) => {
@@ -299,6 +364,48 @@ const Masonry: React.FC<MasonryProps> = ({
     }
   }, [isModalOpen]);
 
+  // Handle touch swipe for mobile
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const isSwiping = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    
+    const deltaX = e.touches[0].clientX - touchStartX.current;
+    const deltaY = e.touches[0].clientY - touchStartY.current;
+    
+    // If horizontal swipe is more significant than vertical, mark as swiping
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+      isSwiping.current = true;
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const swipeThreshold = 50; // Minimum distance for a swipe
+    
+    if (Math.abs(deltaX) > swipeThreshold) {
+      if (deltaX > 0) {
+        goToPrev(); // Swipe right = previous
+      } else {
+        goToNext(); // Swipe left = next
+      }
+    }
+    
+    touchStartX.current = null;
+    touchStartY.current = null;
+    isSwiping.current = false;
+  };
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -330,7 +437,11 @@ const Masonry: React.FC<MasonryProps> = ({
 
   return (
     <>
-      <div ref={containerRef} className="relative w-full h-full">
+      <div 
+        ref={containerRef} 
+        className="relative w-full"
+        style={{ height: containerHeight > 0 ? containerHeight : 'auto' }}
+      >
         {grid.map(item => (
           <div
             key={item.id}
@@ -353,7 +464,34 @@ const Masonry: React.FC<MasonryProps> = ({
         ))}
       </div>
 
-      {/* Image Modal with Navigation */}
+      {/* Load More Button */}
+      {hasMore && (
+        <div className="flex justify-center mt-8 sm:mt-10">
+          <button
+            onClick={handleLoadMore}
+            className="group flex items-center gap-2 px-6 py-3 bg-primary/10 hover:bg-primary/20 border border-primary/30 hover:border-primary/50 text-primary font-medium rounded-full transition-all duration-300"
+          >
+            <span>{loadMoreLabel}</span>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className="group-hover:translate-y-0.5 transition-transform"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+            <span className="text-sm text-primary/60">
+              ({visibleCount}/{items.length})
+            </span>
+          </button>
+        </div>
+      )}      {/* Image Modal with Navigation */}
       {selectedIndex !== null && (
         <div 
           ref={modalRef}
@@ -394,16 +532,20 @@ const Masonry: React.FC<MasonryProps> = ({
             </svg>
           </button>
 
-          {/* Image container */}
+          {/* Image container with swipe support */}
           <div 
-            className="relative max-w-[90vw] max-h-[90vh]"
-            onClick={e => e.stopPropagation()}
+            className="relative max-w-[90vw] max-h-[90vh] touch-pan-y"
+            onClick={e => { if (!isSwiping.current) e.stopPropagation(); }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             <img
               ref={imageRef}
               src={items[selectedIndex].img}
               alt="Image agrandie"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl select-none pointer-events-none"
+              draggable={false}
             />
           </div>
 
