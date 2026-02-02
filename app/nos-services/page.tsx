@@ -22,9 +22,10 @@ export default function NosServicesPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {services.map((service) => (
-            <article
+            <Link
               key={service.id}
-              className="group rounded-xl sm:rounded-2xl overflow-hidden bg-[#2a2a2a] border border-white/10 hover:border-primary/50 transition-all duration-300"
+              href={service.href || '/contact'}
+              className="group rounded-xl sm:rounded-2xl overflow-hidden bg-[#2a2a2a] border border-white/10 hover:border-primary/50 transition-all duration-300 cursor-pointer"
             >
               <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
                 <Image
@@ -47,14 +48,11 @@ export default function NosServicesPage() {
                 <p className="text-fluid-sm sm:text-fluid-base text-gray-400 leading-relaxed mb-3 sm:mb-4 line-clamp-3">
                   {service.description}
                 </p>
-                <Link 
-                  href="/contact" 
-                  className="inline-flex items-center text-fluid-sm sm:text-fluid-base text-primary hover:text-primary/80 font-medium transition-colors"
-                >
+                <span className="inline-flex items-center text-fluid-sm sm:text-fluid-base text-primary group-hover:text-primary/80 font-medium transition-colors">
                   {service.ctaText} →
-                </Link>
+                </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

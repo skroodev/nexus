@@ -5,6 +5,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { LenisProvider } from '../components/LenisProvider';
 import 'lenis/dist/lenis.css';
+import { siteConfig } from '../lib/config';
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans', display: 'swap'});
 
@@ -20,38 +21,40 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
+const { seo, identity, colors } = siteConfig;
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#1C1C1C',
+  themeColor: colors.background,
 };
 
 export const metadata: Metadata = {
   title: {
-    default: "Atelier Nexus | Aménagement Intérieur Haut de Gamme - Côte d'Azur",
-    template: "%s | Atelier Nexus"
+    default: seo.defaultTitle,
+    template: seo.titleTemplate,
   },
-  description: "Studio d'aménagement intérieur basé à Antibes. Transformation d'espaces professionnels, résidentiels et commerciaux avec expertise locale et design contemporain.",
-  keywords: ["aménagement intérieur", "design intérieur", "Antibes", "Côte d'Azur", "bureau", "résidentiel", "commercial", "rénovation", "PACA"],
-  authors: [{ name: "Atelier Nexus" }],
-  creator: "Atelier Nexus",
-  publisher: "Atelier Nexus",
-  metadataBase: new URL('https://ateliernexus.fr'),
+  description: seo.defaultDescription,
+  keywords: seo.keywords,
+  authors: [{ name: identity.businessName }],
+  creator: identity.businessName,
+  publisher: identity.businessName,
+  metadataBase: new URL(seo.siteUrl),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Atelier Nexus | Aménagement Intérieur Haut de Gamme",
-    description: "Studio d'aménagement intérieur basé à Antibes. Transformation d'espaces professionnels, résidentiels et commerciaux.",
-    type: 'website',
-    locale: 'fr_FR',
-    siteName: 'Atelier Nexus',
-    url: 'https://ateliernexus.fr',
+    title: seo.og.title,
+    description: seo.og.description,
+    type: seo.og.type,
+    locale: seo.og.locale,
+    siteName: identity.businessName,
+    url: seo.siteUrl,
   },
   twitter: {
-    card: 'summary_large_image',
-    title: "Atelier Nexus | Aménagement Intérieur",
-    description: "Studio d'aménagement intérieur haut de gamme sur la Côte d'Azur",
+    card: seo.twitter.card,
+    title: seo.twitter.title,
+    description: seo.twitter.description,
   },
   robots: {
     index: true,
@@ -77,7 +80,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
         <div className="staggered-menu-header-backdrop" aria-hidden="true" />
         <LenisProvider />

@@ -1,19 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import { siteConfig } from '../../lib/config';
+import { siteConfig, ProcessStep } from '../../lib/config';
 import SpotlightCard from '../SpotlightCard';
 import ScrollReveal from '../ScrollReveal';
 import AnimatedList from '../AnimatedList';
 import Image from 'next/image';
-
-// Images pour les cards process
-const processImages = [
-  '/images/webp/888cba52b79042ba28d59e56c914ab1629d7ddb2.webp',
-  '/images/webp/eb802c647a3c65e7bbe5140c289b913ca4c6a798.webp',
-  '/images/webp/f4e879b6d2c33989c7391c1b49798c33a0b6ad35.webp',
-  '/images/webp/9f3032eaa2ed27361e33e975bbb568da1f69d8bd.webp',
-];
 
 export default function ProcessSection() {
   const steps = siteConfig.process.steps;
@@ -42,7 +34,14 @@ export default function ProcessSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative">
+    <section 
+      ref={sectionRef} 
+      className="relative"
+      style={{ background: siteConfig.sectionDesign?.process?.background || '#1C1C1C' }}
+    >
+      {/* Séparateur doré en haut */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
+      
       {/* ScrollReveal section - pinned with scroll animation */}
       <ScrollReveal
         textClassName="text-white text-fluid-lg sm:text-fluid-xl md:text-fluid-2xl leading-relaxed max-w-4xl text-left"
@@ -51,7 +50,7 @@ export default function ProcessSection() {
       </ScrollReveal>
 
       {/* Process steps section */}
-      <div className="py-8 sm:py-12 md:py-16 max-w-fluid mx-auto px-4 sm:px-6">
+      <div className="py-12 sm:py-16 md:py-24 max-w-fluid mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 min-h-[60vh] sm:min-h-[80vh]">
           {/* Left column: Sticky title and description */}
           <div ref={leftRef} className="lg:sticky lg:top-1/2 lg:-translate-y-1/2 lg:self-start mb-8 sm:mb-16 md:mb-24">
@@ -61,11 +60,11 @@ export default function ProcessSection() {
 
           {/* Right column: Cards */}
           <AnimatedList
-            items={steps.map((st, index) => (
-              <SpotlightCard key={st.id} className="card-item border border-white/10 rounded-xl sm:rounded-2xl shadow-sm aspect-square flex flex-col justify-between relative overflow-hidden">
+            items={steps.map((st: ProcessStep) => (
+              <SpotlightCard key={st.id} className="card-item border border-white/10 rounded-xl sm:rounded-2xl shadow-sm aspect-3/2 flex flex-col justify-between relative overflow-hidden">
                 {/* Background image */}
                 <Image
-                  src={processImages[index % processImages.length]}
+                  src={st.image}
                   alt={st.title}
                   fill
                   className="object-cover"

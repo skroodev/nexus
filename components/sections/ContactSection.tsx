@@ -8,7 +8,13 @@ export default function ContactSection() {
   const form = contact.form
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-[#1C1C1C]">
+    <section 
+      className="py-16 sm:py-20 md:py-28 relative"
+      style={{ background: siteConfig.sectionDesign?.contact?.background || '#1C1C1C' }}
+    >
+      {/* Séparateur doré subtil */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
+      
       <div className="max-w-fluid mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -49,7 +55,7 @@ export default function ContactSection() {
                     required={f.required} 
                     className="w-full bg-[#1C1C1C] border border-white/10 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-fluid-sm sm:text-fluid-base text-white focus:border-primary focus:outline-none transition-colors"
                   >
-                    <option value="">Sélectionner...</option>
+                    <option value="">{form.selectPlaceholder}</option>
                     {f.options?.map((o: string) => (
                       <option key={o} value={o}>{o}</option>
                     ))}

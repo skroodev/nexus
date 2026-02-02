@@ -23,17 +23,20 @@ export default function Page() {
 			<FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0}>
 				<HeroSection />
 			</FadeContent>
-			<main className="py-12">
-				<FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0} delay={0.2}>
+			<main className="relative">
+				{/* Effet de fond subtil sur tout le main */}
+				<div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-transparent pointer-events-none" />
+				
+				<FadeContent blur={true} duration={400} ease="ease-out" initialOpacity={0} delay={0.2}>
 					<ServicesSection />
 				</FadeContent>
-				<FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0} delay={0.4}>
+				<FadeContent blur={true} duration={400} ease="ease-out" initialOpacity={0} delay={0.2}>
 					<ProcessSection />
 				</FadeContent>
-				<FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0} delay={0.6}>
+				<FadeContent blur={true} duration={400} ease="ease-out" initialOpacity={0} delay={0.2}>
 					<ProjectsSection />
 				</FadeContent>
-				<FadeContent blur={true} duration={1000} ease="ease-out" initialOpacity={0} delay={0.8}>
+				<FadeContent blur={true} duration={400} ease="ease-out" initialOpacity={0} delay={0.2}>
 					<ContactSection />
 				</FadeContent>
 			</main>

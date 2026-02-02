@@ -26,7 +26,7 @@ export default function Header() {
       className="constrained-menu"
       items={navItems}
       cta={cta}
-      logoUrl="/images/webp/logo-nx-white.webp"
+      logoUrl={siteConfig.navigation.logoWhite}
       logoHref="/"
       colors={[siteConfig.colors.primary, siteConfig.colors.secondary]}
       accentColor={siteConfig.colors.primary}

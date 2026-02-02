@@ -51,7 +51,7 @@ export default function HeroSection() {
         />
         
         {/* Video - lazy loaded after image with fade-in */}
-        {videoLoaded && (
+        {videoLoaded && hero.video?.enabled && (
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover rounded-b-2xl sm:rounded-b-[2rem] animate-fadeIn"
@@ -61,7 +61,7 @@ export default function HeroSection() {
             playsInline
             preload="none"
           >
-            <source src="/images/webm/hero-video.webm" type="video/webm" />
+            <source src={hero.video.src} type={hero.video.type} />
           </video>
         )}
         
@@ -99,19 +99,19 @@ export default function HeroSection() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             <div className="bg-[#2a2a2a] border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center">
               <div className="text-fluid-3xl sm:text-fluid-4xl font-bold text-primary mb-1 sm:mb-2">{identity.yearsInBusiness}+</div>
-              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">Années d'expertise</div>
+              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">{identity.statsLabels.yearsLabel}</div>
             </div>
             <div className="bg-[#2a2a2a] border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center">
               <div className="text-fluid-3xl sm:text-fluid-4xl font-bold text-primary mb-1 sm:mb-2">{identity.projectsCompleted}+</div>
-              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">Projets réalisés</div>
+              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">{identity.statsLabels.projectsLabel}</div>
             </div>
             <div className="bg-[#2a2a2a] border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center">
               <div className="text-fluid-3xl sm:text-fluid-4xl font-bold text-primary mb-1 sm:mb-2">{identity.teamSize}</div>
-              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">Experts passionnés</div>
+              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">{identity.statsLabels.teamLabel}</div>
             </div>
             <div className="bg-[#2a2a2a] border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center">
               <div className="text-fluid-3xl sm:text-fluid-4xl font-bold text-primary mb-1 sm:mb-2">{identity.founded}</div>
-              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">Fondation</div>
+              <div className="text-fluid-xs sm:text-fluid-sm text-gray-400">{identity.statsLabels.foundedLabel}</div>
             </div>
           </div>
         </div>

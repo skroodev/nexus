@@ -1,10 +1,11 @@
 import React from 'react';
-import { siteConfig } from '../../lib/config';
+import { siteConfig, FooterNavItem } from '../../lib/config';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Footer() {
   const contact = siteConfig.contact;
+  const footer = siteConfig.footer;
 
   return (
     <footer className="bg-[#DBA800] text-black py-8 sm:py-12">
@@ -14,8 +15,8 @@ export default function Footer() {
           {/* Logo & Address */}
           <div className="flex flex-col items-center md:items-start">
             <Image 
-              src="/images/webp/ateliernexusLogo.webp" 
-              alt="Atelier Nexus Logo" 
+              src={footer.logo} 
+              alt={footer.logoAlt} 
               width={250} 
               height={50}
               className="w-40 sm:w-48 md:w-56 h-auto"
@@ -27,7 +28,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div className="text-center md:text-left">
-            <h4 className="font-semibold text-fluid-base mb-3">Contact</h4>
+            <h4 className="font-semibold text-fluid-base mb-3">{footer.labels.contact}</h4>
             <div className="space-y-2">
               <a 
                 href={`tel:${contact.infoBlock.phone}`} 
@@ -46,7 +47,7 @@ export default function Footer() {
 
           {/* Hours */}
           <div className="text-center md:text-left">
-            <h4 className="font-semibold text-fluid-base mb-3">Horaires</h4>
+            <h4 className="font-semibold text-fluid-base mb-3">{footer.labels.hours}</h4>
             <div className="text-fluid-sm text-black/80">
               {contact.infoBlock.hours}
             </div>
@@ -54,8 +55,8 @@ export default function Footer() {
 
           {/* Navigation */}
           <nav className="flex flex-col items-center md:items-start gap-2">
-            <h4 className="font-semibold text-fluid-base mb-1">Navigation</h4>
-            {siteConfig.footer?.navigation?.map((n) => (
+            <h4 className="font-semibold text-fluid-base mb-1">{footer.labels.navigation}</h4>
+            {footer.navigation.map((n: FooterNavItem) => (
               <Link 
                 key={n.href} 
                 href={n.href} 
@@ -70,7 +71,15 @@ export default function Footer() {
 
         {/* Bottom: Credit */}
         <div className="mt-8 sm:mt-10 pt-6 border-t border-black/20 text-fluid-xs text-center text-black/60">
-          {siteConfig.footer?.credit ?? 'skroo.dev'}
+          {footer.credit.text}{' '}
+          <a 
+            href={footer.credit.url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:text-black transition-colors"
+          >
+            {footer.credit.author}
+          </a>
         </div>
       </div>
     </footer>

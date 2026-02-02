@@ -182,3 +182,110 @@
 .service-card:hover .bg-image {
   transform: scale(1.02);
 }
+
+/* ===== PREMIUM SECTION EFFECTS ===== */
+
+/* Séparateur élégant entre sections */
+.section-separator {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.section-separator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(219,168,0,0.25) 50%, transparent 100%);
+}
+
+/* Effet de grain subtil (texture premium) */
+.grain-overlay {
+  position: relative;
+}
+
+.grain-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.02;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grain-overlay > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Glow effect subtil sur les sections */
+.section-glow {
+  position: relative;
+}
+
+.section-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: radial-gradient(ellipse at center, rgba(219,168,0,0.4) 0%, transparent 70%);
+  filter: blur(1px);
+}
+
+/* Animation d'entrée pour les sections */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.section-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover effect premium sur les cartes */
+.card-premium {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-premium:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5),
+              0 0 0 1px rgba(219,168,0,0.1);
+}
+
+/* Bordure animée sur hover */
+.border-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.border-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 40%, rgba(219,168,0,0.3) 50%, transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.border-glow:hover::before {
+  opacity: 1;
+}

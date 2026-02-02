@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
-import { siteConfig } from '../../lib/config';
+import { siteConfig, Service } from '../../lib/config';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -37,7 +37,14 @@ export default function ServicesSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-8 sm:py-12 md:py-16">
+    <section 
+      ref={sectionRef} 
+      className="py-12 sm:py-16 md:py-24 relative"
+      style={{ background: siteConfig.sectionDesign?.services?.background || '#1C1C1C' }}
+    >
+      {/* Glow effect en haut de section */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      
       <div className="max-w-fluid mx-auto">
         <div className="mb-8">
           <h2 className="text-fluid-5xl sm:text-fluid-6xl md:text-fluid-7xl text-white font-bold opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0">{siteConfig.services.sectionTitle}</h2>
@@ -45,7 +52,7 @@ export default function ServicesSection() {
         </div>
         <div ref={cardsRef}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            {services.map((s, index) => (
+            {services.map((s: Service, index: number) => (
               <div 
                 key={s.id} 
                 className="service-card cursor-pointer bg-primary border border-[#F0C419]/30 p-4 sm:p-6 rounded-lg shadow-sm aspect-[1/1] sm:aspect-[4/5] flex flex-col justify-between relative overflow-hidden opacity-0 translate-y-8 scale-95 transition-all duration-500 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 [&.animate-in]:scale-100"
