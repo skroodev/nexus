@@ -6,8 +6,23 @@ const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL
 export const dynamicParams = false
 export const revalidate = 60
 
-export async function generateStaticParams() {
-  return []
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  if (!CMS_URL) {
+    console.warn('generateStaticParams: NEXT_PUBLIC_CMS_URL not set — returning empty params')
+    return []
+  }
+
+  try {
+    const res = await fetch(`${CMS_URL}/api/posts?where[status][equals]=published&limit=100`, { next: { revalidate: 60 } })
+    if (!res.ok) return []
+
+    const data = await res.json()
+    const docs = data.docs || []
+    return docs.map((d: any) => ({ slug: String(d.slug) }))
+  } catch (err) {
+    console.error('generateStaticParams fetch error', err)
+    return []
+  }
 }
 
 async function getPostBySlug(slug: string) {
