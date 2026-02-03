@@ -3,7 +3,7 @@ import React from 'react'
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL
 
-export const dynamicParams = true
+export const dynamicParams = false
 export const revalidate = 60
 
 export async function generateStaticParams() {
