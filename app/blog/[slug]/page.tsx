@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import React from 'react'
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL
 
@@ -57,7 +58,7 @@ async function getPostBySlug(slug: string) {
   }
 }
 
-function RichTextRenderer({ content }: { content: any }): JSX.Element | null {
+function RichTextRenderer({ content }: { content: any }): React.ReactElement | null {
   if (!content) return null
 
   // Handle Lexical JSON format
@@ -90,12 +91,12 @@ function RichTextRenderer({ content }: { content: any }): JSX.Element | null {
   return null
 }
 
-function LexicalNode({ node }: { node: any }): JSX.Element | null {
+function LexicalNode({ node }: { node: any }): React.ReactElement | null {
   if (!node) return null
 
   // Heading nodes
   if (node.type === 'heading' && node.tag) {
-    const Tag = node.tag as keyof JSX.IntrinsicElements
+    const Tag = node.tag as keyof React.ReactHTML
     return (
       <Tag className={node.tag === 'h2' ? 'text-2xl font-bold mt-6 mb-4' : 'text-xl font-semibold mt-4 mb-3'}>
         {node.children && typeof node.children === 'string' && node.children}
@@ -155,7 +156,7 @@ function LexicalNode({ node }: { node: any }): JSX.Element | null {
   return null
 }
 
-function TextNode({ node }: { node: any }): JSX.Element | string | null {
+function TextNode({ node }: { node: any }): React.ReactNode | string | null {
   if (!node) return null
 
   if (node.type === 'text') {
