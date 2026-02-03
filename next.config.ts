@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Static export for Cloudflare Pages (no Node.js server)
-  output: 'export',
+  // Note: Disabled in development for better DX with dynamic routes
+  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   
   // Trailing slashes for static hosting
   trailingSlash: true,
