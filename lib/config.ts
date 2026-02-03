@@ -238,6 +238,7 @@ export const siteConfig = {
     items: [
       { label: 'Nos Services', href: '/nos-services' },
       { label: 'Projets', href: '/projets' },
+      { label: 'Blog', href: '/blog' },
       { label: 'À Propos', href: '/a-propos' },
       { label: 'Contact', href: '/contact' },
     ],
