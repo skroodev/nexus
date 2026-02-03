@@ -96,7 +96,7 @@ function LexicalNode({ node }: { node: any }): React.ReactElement | null {
 
   // Heading nodes
   if (node.type === 'heading' && node.tag) {
-    const Tag = node.tag as keyof React.ReactHTML
+    const Tag = node.tag as React.ElementType
     return (
       <Tag className={node.tag === 'h2' ? 'text-2xl font-bold mt-6 mb-4' : 'text-xl font-semibold mt-4 mb-3'}>
         {node.children && typeof node.children === 'string' && node.children}
